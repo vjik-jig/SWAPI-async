@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SWAPI Async</title>
+  </head>
+  <body>
+    <form class="my-form">
+      <select class="hero-select">
+        <option selected>Select Character:</option>
+        <option value="https://swapi.co/api/people/1/">Luke Skywalker</option>
+        <option value="https://swapi.co/api/people/2/">C-3PO</option>
+        <option value="https://swapi.co/api/people/3/">R2-D2</option>
+        <option value="https://swapi.co/api/people/4/">Darth Vader</option>
+        <option value="https://swapi.co/api/people/5/">Leia Organa</option>
+        <option value="https://swapi.co/api/people/6/">Owen Lars</option>
+        <option value="https://swapi.co/api/people/7/"
+          >Beru Whitesun lars</option
+        >
+        <option value="https://swapi.co/api/people/8/">R5-D4</option>
+        <option value="https://swapi.co/api/people/9/"
+          >Biggs Darklighter</option
+        >
+        <option value="https://swapi.co/api/people/10/">Obi-Wan Kenobi</option>
+      </select>      
+    </form>
+    <ol class="result"></ol>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+      const receivedArr = [];
+      const filmsArr = [];
+
+      const makeRequest = async () => {
+        const data = await fetch("https://swapi.co/api/films/");
+        let res = await data.json();
+        let result = res.results;        
+        result.forEach(item => {
+          const filmObj = {
+            title: item.title,
+            characters: item.characters
+          };
+          receivedArr.push(filmObj);
+        });
+      };
+
+      makeRequest();      
+
+      $(".hero-select").on("change", e => {
+        filmsArr.splice(0, filmsArr.length-1);
+        $(".result").html('');
+        const selectedOpt = e.target.value;
+        receivedArr.forEach(item => {
+          const characterArr = item.characters;
+          const checkResponse = characterArr.some(charItem => charItem === selectedOpt);
+          if (checkResponse) {
+            const filmTitle = item.title;            
+            filmsArr.push(filmTitle);
+          };          
+        });
+        filmsArr.forEach(item => {
+          const list = $("<li>").text(item);                            
+          $('.result').append(list);
+        });        
+      });
+      
+    </script>
+  </body>
+</html>
